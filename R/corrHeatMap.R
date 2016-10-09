@@ -1,4 +1,4 @@
-corrHeatMap <- function(df,minCorr=0,roundto=2,na.rm=FALSE,plotText=TRUE){
+corrHeatMap <- function(df,roundto=2,na.rm=FALSE,plotText=TRUE){
 
   if("character" %in% sapply(df,class)){stop("character columns not supported")}
 
@@ -58,7 +58,8 @@ corrHeatMap <- function(df,minCorr=0,roundto=2,na.rm=FALSE,plotText=TRUE){
     ifelse(. == 1, NA, .) %>%
     as.matrix() %>%
     melt(., na.rm = TRUE) %>%
-    filter(abs(value) > minCorr) %>%
+    #filter(abs(value) > minCorr) %>%
+    top_n(10,abs(value)) %>%
     ggplot(aes(Var2, Var1, fill = value)) +
     geom_tile(color = "white")+
     scale_fill_gradient2(low = "blue", high = "red", mid = "white",
@@ -76,12 +77,23 @@ corrHeatMap <- function(df,minCorr=0,roundto=2,na.rm=FALSE,plotText=TRUE){
       panel.background = element_blank(),
       axis.ticks = element_blank(),
       legend.justification = c(1, 0),
-      legend.position = c(0.6, 0.7),
+      legend.position = "top",
       legend.direction = "horizontal")+
     guides(fill = guide_colorbar(barwidth = 7, barheight = 1,
                                  title.position = "top", title.hjust = 0.5)) -> p
 
     if(plotText == TRUE) p <- p + geom_text(aes(Var2, Var1, label = value*100), color = "black", size = 4)
+
   print(p)
+
+  cormat %>%
+    as.table %>%
+    as.data.frame %>%
+    filter(Var1 != "(Intercept)",
+           Var2 != "(Intercept)",
+           Var1 != Var2) %>%
+    arrange(-abs(Freq)) %>%
+    tbl_df %>%
+  return()
 }
 
