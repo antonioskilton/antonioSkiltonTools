@@ -93,6 +93,7 @@ corrHeatMap <- function(df,roundto=2,na.rm=FALSE,plotText=TRUE){
            Var2 != "(Intercept)",
            Var1 != Var2) %>%
     arrange(-abs(Freq)) %>%
+    slice(seq(1,n(),2)) %>% #select every other row, as they repeat
     tbl_df %>%
     list("cormat" = cormat,"cormatOrdered" = .) %>%
   return()
