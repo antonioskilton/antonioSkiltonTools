@@ -1,4 +1,4 @@
-corrHeatMap <- function(df,roundto=2,na.rm=FALSE,plotText=TRUE){
+corrHeatMap <- function(df,minCorr=0,roundto=2,na.rm=FALSE,plotText=TRUE){
 
   if("character" %in% sapply(df,class)){stop("character columns not supported")}
 
@@ -16,19 +16,17 @@ corrHeatMap <- function(df,roundto=2,na.rm=FALSE,plotText=TRUE){
   if(is.matrix(df)==FALSE){ #if df is not in matrix form
 
     if(numFacVars==1){ #if data has only one factor variable
-
       nonDummyVars <- df[,-facVarIndex] #isolate non factor variables
       dummyVars <- contrasts(df[,facVarIndex],contrasts = FALSE) #create dummy variables
       sapply(df[,facVarIndex],function(x) dummyVars[x == rownames(dummyVars),]) %>% #create dummy matrix
         t() %>% #transpose matrix
         cbind(nonDummyVars,.) -> df #combine new dummy variables with non dummy variables
-
     } else {
       df <- model.matrix(~., data=df, #convert into a matrix
                    contrasts.arg = lapply(df[, sapply(df, is.factor)], contrasts, contrasts = FALSE))[,-1] #no dummy vars dropped
-
     }
   }
+
   df %>% #remove intercept column created by model.matrix()
     cor() %>% #create correlation matrix
     round(., roundto) -> cormat #round to level as set by roundto and store result
@@ -60,6 +58,7 @@ corrHeatMap <- function(df,roundto=2,na.rm=FALSE,plotText=TRUE){
     ifelse(. == 1, NA, .) %>%
     as.matrix() %>%
     melt(., na.rm = TRUE) %>%
+    filter(abs(value) > minCorr) %>%
     ggplot(aes(Var2, Var1, fill = value)) +
     geom_tile(color = "white")+
     scale_fill_gradient2(low = "blue", high = "red", mid = "white",
