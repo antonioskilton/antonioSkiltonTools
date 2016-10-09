@@ -2,12 +2,11 @@
 \alias{corrHeatMap}
 \title{Correlation Heat Map}
 \usage{
-corrHeatMap(df,roundto=2,na.rm=FALSE)
+corrHeatMap(df,roundto=2,na.rm=FALSE,plotText=TRUE)
 }
 \description{
-Creates heatmap from data frame or matrix. If data frame, then dummy variables are automatically created.
+Creates correlation matrix from data and:
+1) prints top ten correlations as output and as plot in form of heat map
+2) returns all correlations as a tibble.
 }
-\examples{
-hello()
-}
-heatMap(data(mtcars),roundto=2,na.rm=FALSE,coefText=TRUE)
+
