@@ -1,13 +1,13 @@
-corrHeatMap <- function(df,roundto=2,na.rm=FALSE){
+corrHeatMap <- function(df,roundto=2,na.rm=FALSE,plotText=TRUE){
 
   if("character" %in% sapply(df,class)){stop("character columns not supported")}
 
-  library(dplyr,quietly=T);library(ggplot2);library(tidyr);library(reshape2,quietly=T)
+  library(dplyr,quietly=T);library(ggplot2);library(tidyr,quietly = T);library(reshape2,quietly=T)
 
   facVarIndex <- which(sapply(df, is.factor))
   numFacVars <- length(facVarIndex)
 
-  if(sum(is.na(df) & na.rm == TRUE) > 0){ #if number of missing variables is greater than 0 AND na.rm arg set to TRUE
+  if(sum(is.na(df)) > 0 & na.rm == TRUE){ #if number of missing variables is greater than 0 AND na.rm arg set to TRUE
     obsBefore <- dim(df)[1]
     df <- na.rm(df) #remove all observations with missing variables
     obsAfter <- dim(df)[1]
@@ -69,7 +69,6 @@ corrHeatMap <- function(df,roundto=2,na.rm=FALSE){
     theme(axis.text.x = element_text(angle = 45, vjust = 1,
                                      size = 12, hjust = 1))+
     coord_fixed() +
-    geom_text(aes(Var2, Var1, label = value*100), color = "black", size = 4) +
     theme(
       axis.title.x = element_blank(),
       axis.title.y = element_blank(),
@@ -81,5 +80,9 @@ corrHeatMap <- function(df,roundto=2,na.rm=FALSE){
       legend.position = c(0.6, 0.7),
       legend.direction = "horizontal")+
     guides(fill = guide_colorbar(barwidth = 7, barheight = 1,
-                                 title.position = "top", title.hjust = 0.5))
+                                 title.position = "top", title.hjust = 0.5)) -> p
+
+    if(plotText == TRUE) p <- p + geom_text(aes(Var2, Var1, label = value*100), color = "black", size = 4)
+  print(p)
 }
+
