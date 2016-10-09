@@ -1,9 +1,9 @@
 Package: antonioSkiltonTools
 Type: Package
 Title: Antonio Skilton's data analysis tools
-Version: 0.0.1
+Version: 0.0.2
 Author: Antonio Skilton
-Maintainer: antonio.skilton@gmail.com
+Maintainer: Antonio Skilton <antonio.skilton@gmail.com>
 Description: Tools used by Antonio Skilton, developed while studying in Seattle University's MSBA program.
 License: Unlimited
 LazyData: TRUE
