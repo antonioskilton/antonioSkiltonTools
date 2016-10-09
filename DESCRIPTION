@@ -1,0 +1,9 @@
+Package: antonioSkiltonTools
+Type: Package
+Title: Antonio Skilton's Data Analysis Tools
+Version: 0.1.0
+Author: Antonio Skilton
+Maintainer: Who to complain to <yourfault@somewhere.net>
+Description: Tools used by Antonio Skilton, developed while studying in Seattle University's MSBA program.
+License: Unlimited
+LazyData: TRUE
