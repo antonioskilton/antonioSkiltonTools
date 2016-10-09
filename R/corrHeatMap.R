@@ -94,6 +94,7 @@ corrHeatMap <- function(df,roundto=2,na.rm=FALSE,plotText=TRUE){
            Var1 != Var2) %>%
     arrange(-abs(Freq)) %>%
     tbl_df %>%
-  return(list("cormat" = cormat,"cormatOrdered" = .))
+    list("cormat" = cormat,"cormatOrdered" = .) %>%
+  return()
 }
 
