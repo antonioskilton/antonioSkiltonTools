@@ -1,8 +1,8 @@
 corrHeatMap <- function(df,roundto=2,na.rm=FALSE,plotText=TRUE){
 
-  if("character" %in% sapply(df,class)){stop("character columns not supported")}
+  library(tidyverse, quietly = T);library(reshape2,quietly=T)
 
-  library(dplyr,quietly=T);library(ggplot2);library(tidyr,quietly = T);library(reshape2,quietly=T)
+  if("character" %in% sapply(df,class)){mutate_if(df, is.character, as.factor)}
 
   facVarIndex <- which(sapply(df, is.factor))
   numFacVars <- length(facVarIndex)
