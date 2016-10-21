@@ -1,12 +1,12 @@
-\name{corrHeatMap}
-\alias{corrHeatMap}
-\title{Correlation Heat Map}
+\name{corrBars}
+\alias{CorrBars}
+\title{Correlation Bar Plot}
 \usage{
-corrHeatMap(df,roundto=2,na.rm=FALSE,plotText=TRUE)
+corrBars(df,roundto=2,na.rm=FALSE)
 }
 \description{
 Creates correlation matrix from data and:
-1) prints top ten correlations as output and as plot in form of heat map
+1) prints top ten correlations as output and as plot in form of a bar plot
 2) returns correlation matrix; all ordered correlation pairs as a tibble.
 }
 

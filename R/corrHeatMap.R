@@ -1,4 +1,4 @@
-corrHeatMap <- function(df,roundto=2,na.rm=FALSE,plotText=TRUE){
+corrBars <- function(df,roundto=2,na.rm=FALSE){
 
   library(tidyverse, quietly = T);library(reshape2,quietly=T)
 
