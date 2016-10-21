@@ -2,7 +2,11 @@ corrHeatMap <- function(df,roundto=2,na.rm=FALSE,plotText=TRUE){
 
   library(tidyverse, quietly = T);library(reshape2,quietly=T)
 
-  if("character" %in% sapply(df,class)){mutate_if(df, is.character, as.factor)}
+  if("character" %in% sapply(df,class)){df <- mutate_if(df, is.character, as.factor)}
+
+  df %>%
+    select_if(is.factor) %>%
+    names -> factorColNames
 
   facVarIndex <- which(sapply(df, is.factor))
   numFacVars <- length(facVarIndex)
@@ -57,7 +61,13 @@ corrHeatMap <- function(df,roundto=2,na.rm=FALSE,plotText=TRUE){
     get_upper_tri() %>%
     ifelse(. == 1, NA, .) %>%
     as.matrix() %>%
-    melt(., na.rm = TRUE) %>%
+    melt(., na.rm = TRUE) -> meltTest
+
+    #Remove within category correlations
+    for(factors in factorColNames){
+    meltTest[grepl(factors,meltTest[,1]) & grepl(factors,meltTest[,2]),3] <- NA}
+
+  meltTest %>%
     #filter(abs(value) > minCorr) %>%
     top_n(10,abs(value)) %>%
     ggplot(aes(Var2, Var1, fill = value)) +
