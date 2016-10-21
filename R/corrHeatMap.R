@@ -67,32 +67,45 @@ corrHeatMap <- function(df,roundto=2,na.rm=FALSE,plotText=TRUE){
     for(factors in factorColNames){
     meltTest[grepl(factors,meltTest[,1]) & grepl(factors,meltTest[,2]),3] <- NA}
 
-  meltTest %>%
-    #filter(abs(value) > minCorr) %>%
+  tbl_df(meltTest) %>%
     top_n(10,abs(value)) %>%
-    ggplot(aes(Var2, Var1, fill = value)) +
-    geom_tile(color = "white")+
-    scale_fill_gradient2(low = "blue", high = "red", mid = "white",
-                         midpoint = 0, limit = c(-1,1), space = "Lab",
-                         name="Pearson\nCorrelation") +
-    theme_minimal() + # minimal theme
-    theme(axis.text.x = element_text(angle = 45, vjust = 1,
-                                     size = 12, hjust = 1))+
-    coord_fixed() +
-    theme(
-      axis.title.x = element_blank(),
-      axis.title.y = element_blank(),
-      panel.grid.major = element_blank(),
-      panel.border = element_blank(),
-      panel.background = element_blank(),
-      axis.ticks = element_blank(),
-      legend.justification = c(1, 0),
-      legend.position = "top",
-      legend.direction = "horizontal")+
-    guides(fill = guide_colorbar(barwidth = 7, barheight = 1,
-                                 title.position = "top", title.hjust = 0.5)) -> p
+    unite(vars, Var1, Var2, sep = " & ") %>%
+    arrange(desc(value)) %>%
+    mutate(vars = factor(vars, levels= unique(vars), ordered = T),
+           text_placement = ifelse(value < 0, value + 0.1, value - 0.1)) %>%
+    ggplot() +
+      geom_bar(aes(x = vars, y = value, fill = value), stat = "identity") + theme_minimal() +
+      scale_fill_gradient2(low = "blue", high = "red", mid = "white",
+                           midpoint = 0, limit = c(-1,1), space = "Lab",
+                           name="Pearson\nCorrelation") +
+    geom_text(aes(x = vars, y = text_placement, label = value*100), color = "black", size = 4) +
+    ylab("Correlation") + theme(axis.title.y = element_blank()) + coord_flip() -> p
 
-    if(plotText == TRUE) p <- p + geom_text(aes(Var2, Var1, label = value*100), color = "black", size = 4)
+  # meltTest %>%
+  #   top_n(10,abs(value)) %>%
+  #   ggplot(aes(Var2, Var1, fill = value)) +
+  #   geom_tile(color = "white")+
+  #   scale_fill_gradient2(low = "blue", high = "red", mid = "white",
+  #                        midpoint = 0, limit = c(-1,1), space = "Lab",
+  #                        name="Pearson\nCorrelation") +
+  #   theme_minimal() + # minimal theme
+  #   theme(axis.text.x = element_text(angle = 45, vjust = 1,
+  #                                    size = 12, hjust = 1))+
+  #   coord_fixed() +
+  #   theme(
+  #     axis.title.x = element_blank(),
+  #     axis.title.y = element_blank(),
+  #     panel.grid.major = element_blank(),
+  #     panel.border = element_blank(),
+  #     panel.background = element_blank(),
+  #     axis.ticks = element_blank(),
+  #     legend.justification = c(1, 0),
+  #     legend.position = "top",
+  #     legend.direction = "horizontal")+
+  #   guides(fill = guide_colorbar(barwidth = 7, barheight = 1,
+  #                                title.position = "top", title.hjust = 0.5)) -> p
+  #
+  #   if(plotText == TRUE) p <- p + geom_text(aes(Var2, Var1, label = value*100), color = "black", size = 4)
 
   print(p)
 
